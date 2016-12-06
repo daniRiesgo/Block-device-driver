@@ -1,5 +1,7 @@
 # Block-device-driver
 
+
+
 ## Set up environment
 
 
@@ -11,3 +13,7 @@
 ``mount -a``
 4. Set permissions so that users can write and delete only their own data.
 ``chmod a+rwxt /mqueue``
+
+## Credit
+
+Some of the code exposed belongs to Universidad Carlos III de Madrid. Project developed by [Alejandro](https://github.com/alexrs95/), [Diego](https://github.com/diegovicen/) and [me](https://github.com/daniriesgo/).

@@ -55,59 +55,61 @@ int is_disk_processing ( void )
 
 int send_data_to_process ( pid_t p_id, int operation, int block_id, char *block, int error )
 {
-    disk_request current_request ;
+        disk_request current_request ;
 	mqd_t q_cres;
-    int ret ;
+        int ret ;
 	char q_name[256];
 	
 	sprintf(q_name, "/%d_%d", getuid(), p_id) ;
 	ret = link_open(&q_cres, q_name, 10, 0) ;
 	if (ret < 0) return -1;
 
-    current_request.process_requester = p_id ;
-    current_request.operation         = operation ;
-    current_request.block_num         = block_id ;
+        current_request.process_requester = p_id ;
+        current_request.operation         = operation ;
+        current_request.block_num         = block_id ;
 	current_request.error             = error;
-    memcpy(current_request.buffer, block, BLOCK_SIZE) ;
+        memcpy(current_request.buffer, block, BLOCK_SIZE) ;
 
-    ret = link_send(&q_cres, &current_request) ;
-    if (ret < 0) return -1;
-
+        ret = link_send(&q_cres, &current_request) ;
+        if (ret < 0) return -1;
 	
-	ret = link_close(&q_cres);
-    if (ret < 0) return -1;
+	ret = link_close(&q_cres) ;
+        if (ret < 0) return -1;
 
-    return 1 ;
+        return 1 ;
 }
 
-int request_data_to_device (int operation, int block_id, char *block, int error)
+int request_data_to_device   (             int operation, int block_id, char *block, int error )
 {
-    disk_request current_request;
-    int ret;
-	if (1 == disk_processing) {
-        fprintf(stderr, "[%s:%d]: pkernel was using the disk when block request %d arrived\n", 
-            __FILE__, __LINE__, block_id);
-	   return -1;
+        disk_request current_request ;
+        int ret ;
+	
+	if (1 == disk_processing)
+        {
+              fprintf(stderr, 
+                      "[%s:%d]: pkernel was using the disk when block request %d arrived\n", 
+                      __FILE__, __LINE__, block_id);
+	      return -1;
 	} 
 
 	disk_processing = 1;
 
-    current_request.operation = operation ;
-    current_request.block_num = block_id ;
+        current_request.operation = operation ;
+        current_request.block_num = block_id ;
 	current_request.error     = error;
-    memcpy(current_request.buffer, block, BLOCK_SIZE) ;
+        memcpy(current_request.buffer, block, BLOCK_SIZE) ;
 
-    ret = link_send(&q_req, &current_request) ;
-    if (ret < 0) return -1;
+        ret = link_send(&q_req, &current_request) ;
+        if (ret < 0) return -1;
 
-    return 1;
+        return 1;
 }
 
 
 /*
  * Intermediate handlers
  */
-void disk_driver_hwint ( union sigval sv )
+void disk_driver_hwint     ( union sigval sv )
 {
     struct sigevent not;
     disk_request current_request ;
@@ -142,7 +144,7 @@ void disk_driver_hwint ( union sigval sv )
     }
 }
 
-void disk_driver_breq ( union sigval sv )
+void disk_driver_breq      ( union sigval sv )
 {
     struct sigevent not;
     int client_id ;

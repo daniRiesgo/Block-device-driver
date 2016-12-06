@@ -36,17 +36,17 @@ long stats_requests_acc    = 0 ;
 // ending the application
 void handle_sigint()
 {
-    char fname[1024] ;
+        char fname[1024] ;
 
 	printf("\t\t\tDISK_HW: SIGINT received and now exiting\n");
 
-    sprintf(fname, "/%d_q_diskhw_req", getuid()) ;
+        sprintf(fname, "/%d_q_diskhw_req", getuid()) ;
 	link_delete(fname);
 
-    sprintf(fname, "/%d_q_diskhw_res", getuid()) ;
+        sprintf(fname, "/%d_q_diskhw_res", getuid()) ;
 	link_delete(fname);
 
-    printf("\nDISK_HW: Statistics:\n");
+        printf("\nDISK_HW: Statistics:\n");
 	printf("DISK_HW: TOTAL_SEEK_TIME_MICROSEC %ld\n",     stats_time_lseek_acc) ;
 	printf("DISK_HW: TOTAL_TRANSFER_TIME_MICROSEC %ld\n", stats_time_transfer_acc) ;
 	printf("DISK_HW: TOTAL_SEEKS %ld\n",                  stats_lseeks_acc) ;
